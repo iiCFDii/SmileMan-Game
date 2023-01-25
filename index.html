@@ -1,0 +1,72 @@
+﻿<!--
+FileName:       Lab3.html
+Programmer:     Dan Cliburn, Dean S., Chris C., Chris S.
+Date:           8/11/2020
+Purpose:		This file defines the html code necessary to run our WebGL 2 program.
+I've made an attempt to separate the parts of the program using the Model-View-Controller 
+design pattern. The model.js, view.js, and controller.js files define the code for those 
+components respectively. I define the vertex and fragment shader code in this file. 
+-->
+<html>
+  <head>
+    <title>COMP 153 - Assignment 2</title>
+
+    <style type="text/css">
+      canvas {
+        border: 5px dotted blue;
+      }
+    </style>
+
+    <!-- load the javascript files -->
+    <script src="model.js" defer></script>
+    <script src="view.js" defer></script>
+    <script src="controller.js" defer></script>
+
+    <!-- Define the vertex and fragment shaders -->
+    <script id="vertex-shader" type="shader.vert">
+      #version 300 es //specifies that we want OpenGL ES 3.0
+
+      layout (location = 0) in vec4 vPosition; //input attribute 0
+      layout (location = 1) in vec4 vColor; //input attribute 1
+
+      uniform float offsetX; //This variable is assigned a value by our Javascript program
+      //TODO: declare a new uniform variable called offsetY
+      uniform float offsetY;
+
+      out vec4 color; //this is the variable we send to the fragment shader
+
+      void main()
+      {
+          color = vColor; //take the input vColor and assign to color so the fragment shader can access it
+          gl_Position = vec4(vPosition.x + offsetX, vPosition.y + offsetY, 0.0, 1.0);
+          //TODO: modify the line above to update vPosition.y with the value of offsetY
+      }
+    </script>
+
+    <script id="fragment-shader" type="shader.frag">
+      #version 300 es //specifies that we want OpenGL ES 3.0
+      precision mediump float;  //specifies "medium precision"
+
+      in vec4 color; //this is assigned an interpolated value by the rasterizer
+      out vec4 frag_color; //this will be the fragment's color
+
+      void main()
+      {
+          frag_color = color;
+      }
+    </script>
+
+    <!-- Call our controller function from main once the document has loaded -->
+    <script type="text/javascript">
+      function main() {
+        controller(); //controller is defined in controller.js
+      }
+      window.onload = main;
+    </script>
+  </head>
+  <body>
+    <canvas id="webgl-canvas" width="600" height="600">
+      Your browser does not support the HTML5 canvas element.
+    </canvas>
+  </body>
+</html>
